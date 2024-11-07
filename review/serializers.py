@@ -1,6 +1,6 @@
-# serializers.py
 from django import forms
 from .models import Review, ReviewChangeLog, ReviewState
+from rest_framework import serializers
 
 
 class ReviewSerializer(forms.ModelForm):
@@ -48,3 +48,9 @@ class ReviewChangeLogSerializer(forms.ModelForm):
             "ip_address": instance.ip_address,
             "diff": instance.diff,
         }
+
+
+class ReviewStateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReviewState
+        fields = ["id", "name"]
