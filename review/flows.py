@@ -86,7 +86,9 @@ from .models import ReviewStateTransition
 class ReviewFlow(object):
     """Review process definition."""
 
-    stage = fsm.State(ReviewState, default=ReviewState.objects.get(name="New"))
+    stage = fsm.State(
+        ReviewState, default=ReviewState.objects.get_or_create(name="Draft")[0]
+    )
 
     def __init__(self, review: Review, user, ip_address=None):
         self.review = review
