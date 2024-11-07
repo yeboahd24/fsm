@@ -62,6 +62,9 @@ class Review(models.Model):
     def __str__(self):
         return f"#{self.pk} {self.title} by {self.author}"
 
+    def get_stage_display(self):
+        return self.stage.name
+
 
 class ReviewChangeLog(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE)

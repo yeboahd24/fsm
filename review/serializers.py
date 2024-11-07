@@ -12,7 +12,7 @@ class ReviewSerializer(forms.ModelForm):
     def to_representation(self, instance):
         return {
             "id": instance.id,
-            "stage": instance.stage,
+            "stage": instance.stage.id,
             "stage_display": instance.get_stage_display(),
             "author": instance.author.username,
             "approver": instance.approver.username if instance.approver else None,
