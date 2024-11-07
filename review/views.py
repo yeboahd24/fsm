@@ -79,29 +79,6 @@ class ReviewTransitionView(View):
             return JsonResponse({"error": str(e)}, status=500)
 
 
-# @method_decorator(csrf_exempt, name="dispatch")
-# class ReviewCreateView(View):
-#     def post(self, request):
-#         if not request.user.is_authenticated:
-#             return JsonResponse({"error": "Authentication required."}, status=401)
-#
-#         data = json.loads(request.body)
-#         serializer = ReviewSerializer(data=data)
-#
-#         if serializer.is_valid():
-#             review = serializer.save(commit=False)
-#             review.author = request.user
-#             if not review.stage:
-#                 review.stage = ReviewState.NEW  # Default stage if not provided
-#             review.save()
-#
-#             return JsonResponse(
-#                 ReviewSerializer().to_representation(review), status=201
-#             )
-#
-#         return JsonResponse(serializer.errors, status=400)
-
-
 @method_decorator(csrf_exempt, name="dispatch")
 class ReviewCreateView(View):
     def post(self, request):
@@ -112,13 +89,37 @@ class ReviewCreateView(View):
         serializer = ReviewSerializer(data=data)
 
         if serializer.is_valid():
-            review_flow = ReviewFlow.create_new_review(
-                user=request.user,
-                data=data,
-                ip_address=request.META.get("REMOTE_ADDR"),
-            )
+            review = serializer.save(commit=False)
+            review.author = request.user
+            if not review.stage:
+                review.stage = ReviewState.NEW  # Default stage if not provided
+            review.save()
+
             return JsonResponse(
-                ReviewSerializer().to_representation(review_flow.review), status=201
+                ReviewSerializer().to_representation(review), status=201
             )
 
         return JsonResponse(serializer.errors, status=400)
+
+
+#
+# @method_decorator(csrf_exempt, name="dispatch")
+# class ReviewCreateView(View):
+#     def post(self, request):
+#         if not request.user.is_authenticated:
+#             return JsonResponse({"error": "Authentication required."}, status=401)
+#
+#         data = json.loads(request.body)
+#         serializer = ReviewSerializer(data=data)
+#
+#         if serializer.is_valid():
+#             review_flow = ReviewFlow.create_new_review(
+#                 user=request.user,
+#                 data=data,
+#                 ip_address=request.META.get("REMOTE_ADDR"),
+#             )
+#             return JsonResponse(
+#                 ReviewSerializer().to_representation(review_flow.review), status=201
+#             )
+#
+#         return JsonResponse(serializer.errors, status=400)
